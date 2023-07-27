@@ -22,7 +22,7 @@ import walkFiles from './helpers/walk-files.js'
 
 program
   .description('Update internal links in content files')
-  .option('-v, --verbose', 'Verbose outputs')
+  .option('--silent', 'The opposite of verbose')
   .option('--debug', "Don't hide any errors")
   .option('--dry-run', "Don't actually write changes to disk")
   .option('--dont-set-autotitle', "Do NOT transform the link text to 'AUTOTITLE' (if applicable)")
@@ -67,7 +67,7 @@ async function main(files, opts) {
         actualFiles.push(
           ...walkFiles(file, ['.md', '.yml']).filter((p) => {
             return !excludeFilePaths.has(p)
-          })
+          }),
         )
       } else if (!excludeFilePaths.has(file)) {
         actualFiles.push(file)
@@ -77,11 +77,17 @@ async function main(files, opts) {
       throw new Error(`No files found in ${files}`)
     }
 
+    const verbose = !opts.silent
+
+    if (verbose) {
+      console.log(chalk.bold(`Updating internal links in ${actualFiles.length} found files...`))
+    }
+
     // The updateInternalLinks doesn't use "negatives" for certain options
     const options = {
       setAutotitle: !opts.dontSetAutotitle,
       fixHref: !opts.dontFixHref,
-      verbose: !!opts.verbose,
+      verbose,
       strict: !!opts.strict,
     }
 
@@ -108,18 +114,18 @@ async function main(files, opts) {
       const differentContent = content !== newContent
       const differentData = !equalObject(data, newData)
       if (differentContent || differentData) {
-        if (opts.verbose || opts.check) {
+        if (verbose || opts.check) {
           if (opts.check) {
             exitCheck++
           }
-          if (opts.verbose) {
+          if (verbose) {
             console.log(
               opts.dryRun ? 'Would change...' : 'Will change...',
               chalk.bold(file),
               differentContent
                 ? chalk.dim(`${replacements.length} change${replacements.length !== 1 ? 's' : ''}`)
                 : '',
-              differentData ? chalk.dim('different data') : ''
+              differentData ? chalk.dim('different data') : '',
             )
             for (const { asMarkdown, newAsMarkdown, line, column } of replacements) {
               console.log('  ', chalk.red(asMarkdown))
@@ -139,7 +145,7 @@ async function main(files, opts) {
             fs.writeFileSync(
               file,
               frontmatter.stringify(newContent, newData, { lineWidth: 10000 }),
-              'utf-8'
+              'utf-8',
             )
           }
         }
@@ -162,18 +168,18 @@ async function main(files, opts) {
       console.log('Number of files checked:'.padEnd(30), chalk.bold(countFiles.toLocaleString()))
       console.log(
         'Number of files changed:'.padEnd(30),
-        chalk.bold(countChangedFiles.toLocaleString())
+        chalk.bold(countChangedFiles.toLocaleString()),
       )
       console.log(
         'Sum number of replacements:'.padEnd(30),
-        chalk.bold(countReplacements.toLocaleString())
+        chalk.bold(countReplacements.toLocaleString()),
       )
 
       const countWarnings = results.reduce((prev, next) => prev + next.warnings.length, 0)
       const countWarningFiles = new Set(results.filter((result) => result.warnings.length > 0)).size
       console.log(
         'Number of files with warnings:'.padEnd(30),
-        chalk.bold(countWarningFiles.toLocaleString())
+        chalk.bold(countWarningFiles.toLocaleString()),
       )
       console.log('Sum number of warnings:'.padEnd(30), chalk.bold(countWarnings.toLocaleString()))
 
@@ -188,7 +194,9 @@ async function main(files, opts) {
     }
 
     if (exitCheck) {
-      console.log(chalk.yellow(`More than one file would become different. Unsuccessful check.`))
+      if (verbose) {
+        console.log(chalk.yellow(`More than one file would become different. Unsuccessful check.`))
+      }
       process.exit(exitCheck)
     } else if (opts.check) {
       console.log(chalk.green('No changes needed or necessary. 🌈'))
@@ -305,8 +313,8 @@ function countByTree(results) {
     const indentationPad = indentation ? `${'   '.repeat(indentation)} ↳ ` : ''
     console.log(
       `${indentationPad}${last.padEnd(padding - indentationPad.length)} ${String(
-        files[each]
-      ).padEnd(col1.length)} ${changes[each]}`
+        files[each],
+      ).padEnd(col1.length)} ${changes[each]}`,
     )
   }
 }

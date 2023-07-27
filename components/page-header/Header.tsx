@@ -17,9 +17,9 @@ import { useMainContext } from 'components/context/MainContext'
 import { useHasAccount } from 'components/hooks/useHasAccount'
 import { LanguagePicker } from './LanguagePicker'
 import { HeaderNotifications } from 'components/page-header/HeaderNotifications'
-import { ApiVersionPicker } from 'components/sidebar/ApiVersionPicker'
+import { ApiVersionPicker } from 'src/rest/components/ApiVersionPicker'
 import { useTranslation } from 'components/hooks/useTranslation'
-import { Search } from 'components/Search'
+import { Search } from 'src/search/components/Search'
 import { Breadcrumbs } from 'components/page-header/Breadcrumbs'
 import { VersionPicker } from 'components/page-header/VersionPicker'
 import { SidebarNav } from 'components/sidebar/SidebarNav'
@@ -30,7 +30,7 @@ import styles from './Header.module.scss'
 export const Header = () => {
   const router = useRouter()
   const { error } = useMainContext()
-  const { isHomepageVersion, currentProduct, currentProductTree, allVersions } = useMainContext()
+  const { isHomepageVersion, currentProduct, allVersions } = useMainContext()
   const { currentVersion } = useVersion()
   const { t } = useTranslation(['header'])
   const isRestPage = currentProduct && currentProduct.id === 'rest'
@@ -50,7 +50,6 @@ export const Header = () => {
   const signupCTAVisible =
     hasAccount === false && // don't show if `null`
     (currentVersion === DEFAULT_VERSION || currentVersion === 'enterprise-cloud@latest')
-  const productTitle = currentProductTree?.shortTitle || currentProductTree?.title
   const [windowSize, setWindowSize] = useState(0)
   const handleWindowResize = useCallback(() => {
     setWindowSize(window.innerWidth)
@@ -127,15 +126,17 @@ export const Header = () => {
       <div
         className={cx(
           'border-bottom d-unset color-border-muted no-print z-3 color-bg-default',
-          styles.header
+          styles.header,
         )}
       >
         {error !== '404' && <HeaderNotifications />}
         <header
           className={cx(
             'color-bg-default p-2 position-sticky top-0 z-1 border-bottom',
-            scroll && 'color-shadow-small'
+            scroll && 'color-shadow-small',
           )}
+          role="banner"
+          aria-label="Main"
         >
           <div
             className="d-flex flex-justify-between p-2 flex-items-center flex-wrap"
@@ -151,9 +152,9 @@ export const Header = () => {
                 className="d-flex flex-items-center color-fg-default no-underline mr-3"
               >
                 <MarkGithubIcon size={32} />
-                <span className="h4 text-semibold ml-2">{t('github_docs')}</span>
+                <span className="h4 text-semibold ml-2 mr-3">{t('github_docs')}</span>
               </Link>
-              <div className="hide-sm border-left">
+              <div className="hide-sm border-left pl-3">
                 <VersionPicker />
               </div>
             </div>
@@ -168,7 +169,7 @@ export const Header = () => {
                     isSearchOpen
                       ? styles.searchContainerWithOpenSearch
                       : styles.searchContainerWithClosedSearch,
-                    'mr-3'
+                    'mr-3',
                   )}
                 >
                   <Search />
@@ -195,7 +196,7 @@ export const Header = () => {
               <IconButton
                 className={cx(
                   'hide-lg hide-xl',
-                  !isSearchOpen ? 'd-flex flex-items-center' : 'd-none'
+                  !isSearchOpen ? 'd-flex flex-items-center' : 'd-none',
                 )}
                 data-testid="mobile-search-button"
                 onClick={() => setIsSearchOpen(!isSearchOpen)}
@@ -306,7 +307,7 @@ export const Header = () => {
                         className="d-flex flex-justify-between flex-items-center color-fg-muted border-top px-3 py-3"
                       >
                         {t`sign_up_cta`}
-                        <LinkExternalIcon />
+                        <LinkExternalIcon aria-label="(external site)" />
                       </Link>
                     )}
                   </div>
@@ -315,7 +316,7 @@ export const Header = () => {
             </div>
           </div>
           {!isHomepageVersion && !isSearchResultsPage && (
-            <div className="d-flex flex-items-center d-xl-none mt-2">
+            <div className="d-flex flex-items-center d-xxl-none mt-2">
               <div className={cx(styles.sidebarOverlayCloseButtonContainer, 'mr-2')}>
                 <IconButton
                   data-testid="sidebar-hamburger"
@@ -347,17 +348,14 @@ export const Header = () => {
                     sx={{ display: 'block' }}
                   >
                     <AllProductsLink />
-                    {error === '404' ||
-                    !currentProduct ||
-                    isSearchResultsPage ||
-                    !currentProductTree ? null : (
+                    {error === '404' || !currentProduct || isSearchResultsPage ? null : (
                       <div className="mt-3">
                         <Link
                           data-testid="sidebar-product-dialog"
-                          href={currentProductTree.href}
+                          href={currentProduct.href}
                           className="d-block pl-1 mb-2 h3 color-fg-default no-underline"
                         >
-                          {productTitle}
+                          {currentProduct.name}
                         </Link>
                       </div>
                     )}

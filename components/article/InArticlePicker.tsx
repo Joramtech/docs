@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import Cookies from 'js-cookie'
-import { UnderlineNav } from '@primer/react'
-import { sendEvent, EventType } from 'src/events/browser'
+import Cookies from 'components/lib/cookies'
+import { UnderlineNav } from '@primer/react/drafts'
+import { sendEvent, EventType } from 'src/events/components/events'
 import { useRouter } from 'next/router'
 
 type Option = {
@@ -83,7 +83,7 @@ export const InArticlePicker = ({
   // If you're in local development, you have the <ClientSideRefresh>
   // causing a XHR refresh of the content triggered by the Page Visibility
   // API (implemented in the uswSWR hook). That means that on the pages that
-  // contain these `.extended-markdown` classes, any DOM changes we might
+  // contain these `.ghd-tool` classes, any DOM changes we might
   // have previously made are lost and started over.
   useEffect(() => {
     let mounted = true
@@ -130,44 +130,39 @@ export const InArticlePicker = ({
       preference_value: value,
     })
 
-    Cookies.set(cookieKey, value, {
-      sameSite: 'strict',
-      secure: document.location.protocol !== 'http:',
-      expires: 365,
-    })
+    Cookies.set(cookieKey, value)
   }
 
   const sharedContainerProps = {
-    'data-testid': `${queryStringKey}-picker`,
     'aria-label': ariaLabel,
-    [`data-default-${queryStringKey}`]: defaultValue || '',
-    className: 'mb-4',
   }
 
   const params = new URLSearchParams(asPathQuery)
 
   return (
-    <UnderlineNav {...sharedContainerProps}>
-      {options.map((option) => {
-        params.set(queryStringKey, option.value)
-        const linkProps = {
-          [`data-${queryStringKey}`]: option.value,
-        }
-        return (
-          <UnderlineNav.Link
-            href={`?${params}`}
-            key={option.value}
-            selected={option.value === currentValue}
-            onClick={(event) => {
-              event.preventDefault()
-              onClickChoice(option.value)
-            }}
-            {...linkProps}
-          >
-            {option.label}
-          </UnderlineNav.Link>
-        )
-      })}
-    </UnderlineNav>
+    <div data-testid={`${queryStringKey}-picker`}>
+      <UnderlineNav {...sharedContainerProps}>
+        {options.map((option) => {
+          params.set(queryStringKey, option.value)
+          const linkProps = {
+            [`data-${queryStringKey}`]: option.value,
+          }
+          return (
+            <UnderlineNav.Item
+              href={`?${params}`}
+              key={option.value}
+              aria-current={option.value === currentValue ? 'page' : undefined}
+              onSelect={(event) => {
+                event.preventDefault()
+                onClickChoice(option.value)
+              }}
+              {...linkProps}
+            >
+              {option.label}
+            </UnderlineNav.Item>
+          )
+        })}
+      </UnderlineNav>
+    </div>
   )
 }

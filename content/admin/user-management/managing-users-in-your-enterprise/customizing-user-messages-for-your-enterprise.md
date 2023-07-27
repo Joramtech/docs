@@ -68,6 +68,7 @@ There are several types of user messages.
 {% data reusables.enterprise_site_admin_settings.save-changes %}{% endif %}{% endif %}
 
 {% ifversion ghes or ghae %}
+
 ## Creating a mandatory message
 
 You can create a mandatory message that {% data variables.product.product_name %} will show to all users the first time they sign in after you save the message. The message appears in a pop-up window that the user must dismiss before using {% data variables.location.product_location %}.
@@ -102,7 +103,6 @@ Each time a user sees a mandatory message, an audit log event is created. The ev
 
 {% endif %}
 
-
 ## Creating a global announcement banner
 
 You can set a global announcement banner to be displayed to all users at the top of every page{% ifversion ghec %} within your enterprise{% endif %}.
@@ -126,9 +126,9 @@ You can also set an announcement banner{% ifversion ghes %} in the administrativ
    **Note:** Announcements must either have an expiration date, be user dismissible, or both.
 
    {% endnote %}{% endif %}
-{% ifversion ghe-announce-dismiss %}
+{%- ifversion ghe-announce-dismiss %}
 1. Optionally, to allow each user to dismiss the announcement, select **User dismissible**.
-{% endif %}{% ifversion custom-banner-messages %}
+{%- endif %}{% ifversion custom-banner-messages %}
 1. Optionally, to allow each user to dismiss the announcement, select **Allow users to dismiss the announcement**.
-{% endif %}
+{%- endif %}
 {% data reusables.enterprise_site_admin_settings.message-preview-save %}

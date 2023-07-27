@@ -1,7 +1,7 @@
 ---
 title: Renaming a branch
 intro: You can change the name of a branch in a repository.
-permissions: 'People with write permissions to a repository can rename a branch in the repository unless it is the [default branch](/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-branches#about-the-default-branch){% ifversion fpt or ghec or ghes %} or a [protected branch](/repositories/configuring-branches-and-merges-in-your-repository/defining-the-mergeability-of-pull-requests/about-protected-branches){% endif %}. People with admin permissions can rename the default branch{% ifversion fpt or ghec or ghes %} and protected branches{% endif %}.'
+permissions: 'People with write permissions to a repository can rename a branch in the repository unless it is the [default branch](/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-branches#about-the-default-branch){% ifversion fpt or ghec or ghes %} or a [protected branch](/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches){% endif %}. People with admin permissions can rename the default branch{% ifversion fpt or ghec or ghes %} and protected branches{% endif %}.'
 versions:
   fpt: '*'
   ghes: '*'
@@ -40,13 +40,14 @@ After you rename a branch in a repository on {% data variables.product.product_n
 From the local clone of the repository on a computer, run the following commands to update the name of the default branch.
 
 ```shell
-$ git branch -m OLD-BRANCH-NAME NEW-BRANCH-NAME
-$ git fetch origin
-$ git branch -u origin/NEW-BRANCH-NAME NEW-BRANCH-NAME
-$ git remote set-head origin -a
+git branch -m OLD-BRANCH-NAME NEW-BRANCH-NAME
+git fetch origin
+git branch -u origin/NEW-BRANCH-NAME NEW-BRANCH-NAME
+git remote set-head origin -a
 ```
 
 Optionally, run the following command to remove tracking references to the old branch name.
+
 ```
-$ git remote prune origin
+git remote prune origin
 ```

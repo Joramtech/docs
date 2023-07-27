@@ -1,6 +1,6 @@
 import path from 'path'
 import slash from 'slash'
-import statsd from '../lib/statsd.js'
+import statsd from '#src/observability/lib/statsd.js'
 import {
   firstVersionDeprecatedOnNewSite,
   lastVersionWithoutArchivedRedirectsFile,
@@ -15,7 +15,8 @@ import got from 'got'
 import { readCompressedJsonFileFallbackLazily } from '../lib/read-json-file.js'
 import { archivedCacheControl, languageCacheControl } from './cache-control.js'
 import { pathLanguagePrefixed, languagePrefixPathRegex } from '../lib/languages.js'
-import getRedirect, { splitPathByLanguage } from '../lib/get-redirect.js'
+import getRedirect, { splitPathByLanguage } from '../src/redirects/lib/get-redirect.js'
+import getRemoteJSON from './get-remote-json.js'
 
 const REMOTE_ENTERPRISE_STORAGE_URL = 'https://githubdocs.azureedge.net/enterprise'
 
@@ -33,10 +34,10 @@ function splitByLanguage(uri) {
 // `readJsonFileLazily()` function will, at import-time, check that
 // the path does exist.
 const archivedRedirects = readCompressedJsonFileFallbackLazily(
-  './lib/redirects/static/archived-redirects-from-213-to-217.json'
+  './src/redirects/lib/static/archived-redirects-from-213-to-217.json',
 )
 const archivedFrontmatterValidURLS = readCompressedJsonFileFallbackLazily(
-  './lib/redirects/static/archived-frontmatter-valid-urls.json'
+  './src/redirects/lib/static/archived-frontmatter-valid-urls.json',
 )
 
 // Combine all the things you need to make sure the response is
@@ -74,23 +75,6 @@ const retryConfiguration = { limit: 3 }
 // set to 500ms. Let's try to be very conservative here to avoid
 // unnecessary error reporting.
 const timeoutConfiguration = { response: 1500 }
-
-async function getRemoteJSON(url, config) {
-  // got will, by default, follow redirects and it will throw if the ultimate
-  // response is not a 2xx.
-  // But it's possible that the page is a 200 OK but it's just not a JSON
-  // page at all. Then we can't assume we can deserialize it.
-  const res = await got(url, Object.assign({ cache: _getRemoteJSONCache }, config))
-  if (!res.headers['content-type'].startsWith('application/json')) {
-    throw new Error(
-      `Fetching '${url}' resulted in a non-JSON response (${res.headers['content-type']})`
-    )
-  }
-  const tags = [`url:${url}`, `from_cache:${res.isFromCache}`]
-  statsd.increment('middleware.archived_get_remote_json', 1, tags)
-  return JSON.parse(res.body)
-}
-const _getRemoteJSONCache = new Map()
 
 // This module handles requests for deprecated GitHub Enterprise versions
 // by routing them to static content in help-docs-archived-enterprise-versions

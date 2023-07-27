@@ -1,6 +1,6 @@
 ---
 title: About organizations
-intro: 'Organizations are shared accounts where businesses and open-source projects can collaborate across many projects at once, with sophisticated security and administrative features.'
+intro: '{% data reusables.organizations.short-summary %}'
 redirect_from:
   - /articles/about-organizations
   - /github/setting-up-and-managing-organizations-and-teams/about-organizations
@@ -31,6 +31,7 @@ To harden your organization's security, you can enforce security requirements an
 To learn how to use organizations most effectively, see "[AUTOTITLE](/organizations/collaborating-with-groups-in-organizations/best-practices-for-organizations)."
 
 {% ifversion fpt or ghec %}
+
 ## About feature availability
 
 {% data reusables.organizations.organization-plans %}
@@ -52,6 +53,7 @@ Enterprise accounts are a feature of {% data variables.product.prodname_ghe_clou
 {% endif %}
 
 {% ifversion fpt or ghec %}
+
 ## Terms of service and data protection for organizations
 
 An entity, such as a company, non-profit, or group, can agree to the Standard Terms of Service or the Corporate Terms of Service for their organization. For more information, see "[AUTOTITLE](/organizations/managing-organization-settings/upgrading-to-the-corporate-terms-of-service)."

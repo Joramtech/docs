@@ -17,8 +17,7 @@ topics:
   - CD
 shortTitle: Migrate from GitLab CI/CD
 ---
-
-{% data reusables.actions.enterprise-beta %}
+ 
 {% data reusables.actions.enterprise-github-hosted-runners %}
 
 ## Introduction
@@ -36,26 +35,18 @@ There are a few differences, and this guide will show you the important differen
 
 Jobs in GitLab CI/CD are very similar to jobs in {% data variables.product.prodname_actions %}. In both systems, jobs have the following characteristics:
 
-* Jobs contain a series of steps or scripts that run sequentially.
-* Jobs can run on separate machines or in separate containers.
-* Jobs run in parallel by default, but can be configured to run sequentially.
+- Jobs contain a series of steps or scripts that run sequentially.
+- Jobs can run on separate machines or in separate containers.
+- Jobs run in parallel by default, but can be configured to run sequentially.
 
 You can run a script or a shell command in a job. In GitLab CI/CD, script steps are specified using the `script` key. In {% data variables.product.prodname_actions %}, all scripts are specified using the `run` key.
 
-Below is an example of the syntax for each system:
+Below is an example of the syntax for each system.
 
-<table class="d-block">
-<tr>
-<th>
-GitLab CI/CD
-</th>
-<th>
-{% data variables.product.prodname_actions %}
-</th>
-</tr>
-<tr>
-<td class="d-table-cell v-align-top">
+### GitLab CI/CD syntax for jobs
+
 {% raw %}
+
 ```yaml
 job1:
   variables:
@@ -63,9 +54,12 @@ job1:
   script:
     - echo "Run your script here"
 ```
+
 {% endraw %}
-</td>
-<td class="d-table-cell v-align-top">
+
+### {% data variables.product.prodname_actions %} syntax for jobs
+
+{% raw %}
 
 ```yaml
 jobs:
@@ -75,28 +69,18 @@ jobs:
       - run: echo "Run your script here"
 ```
 
-</td>
-</tr>
-</table>
+{% endraw %}
 
 ## Runners
 
 Runners are machines on which the jobs run. Both GitLab CI/CD and {% data variables.product.prodname_actions %} offer managed and self-hosted variants of runners. In GitLab CI/CD, `tags` are used to run jobs on different platforms, while in {% data variables.product.prodname_actions %} it is done with the `runs-on` key.
 
-Below is an example of the syntax for each system:
+Below is an example of the syntax for each system.
 
-<table>
-<tr>
-<th>
-GitLab CI/CD
-</th>
-<th>
-{% data variables.product.prodname_actions %}
-</th>
-</tr>
-<tr>
-<td class="d-table-cell v-align-top">
+### GitLab CI/CD syntax for runners
+
 {% raw %}
+
 ```yaml
 windows_job:
   tags:
@@ -110,10 +94,13 @@ linux_job:
   script:
     - echo "Hello, $USER!"
 ```
+
 {% endraw %}
-</td>
-<td class="d-table-cell v-align-top">
+
+### {% data variables.product.prodname_actions %} syntax for runners
+
 {% raw %}
+
 ```yaml
 windows_job:
   runs-on: windows-latest
@@ -125,10 +112,8 @@ linux_job:
   steps:
     - run: echo "Hello, $USER!"
 ```
+
 {% endraw %}
-</td>
-</tr>
-</table>
 
 For more information, see "[AUTOTITLE](/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idruns-on)."
 
@@ -136,37 +121,30 @@ For more information, see "[AUTOTITLE](/actions/using-workflows/workflow-syntax-
 
 Both GitLab CI/CD and {% data variables.product.prodname_actions %} support running jobs in a Docker image. In GitLab CI/CD, Docker images are defined with an `image` key, while in {% data variables.product.prodname_actions %} it is done with the `container` key.
 
-Below is an example of the syntax for each system:
+Below is an example of the syntax for each system.
 
-<table class="d-block">
-<tr>
-<th>
-GitLab CI/CD
-</th>
-<th>
-{% data variables.product.prodname_actions %}
-</th>
-</tr>
-<tr>
-<td class="d-table-cell v-align-top">
+### GitLab CI/CD syntax for Docker images
+
 {% raw %}
+
 ```yaml
 my_job:
   image: node:10.16-jessie
 ```
+
 {% endraw %}
-</td>
-<td class="d-table-cell v-align-top">
+
+### {% data variables.product.prodname_actions %} syntax for Docker images
+
 {% raw %}
+
 ```yaml
 jobs:
   my_job:
     container: node:10.16-jessie
 ```
+
 {% endraw %}
-</td>
-</tr>
-</table>
 
 For more information, see "[AUTOTITLE](/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idcontainer)."
 
@@ -174,20 +152,12 @@ For more information, see "[AUTOTITLE](/actions/using-workflows/workflow-syntax-
 
 GitLab CI/CD uses `rules` to determine if a job will run for a specific condition. {% data variables.product.prodname_actions %} uses the `if` keyword to prevent a job from running unless a condition is met.
 
-Below is an example of the syntax for each system:
+Below is an example of the syntax for each system.
 
-<table class="d-block">
-<tr>
-<th>
-GitLab CI/CD
-</th>
-<th>
-{% data variables.product.prodname_actions %}
-</th>
-</tr>
-<tr>
-<td class="d-table-cell v-align-top">
+### GitLab CI/CD syntax for conditions and expressions
+
 {% raw %}
+
 ```yaml
 deploy_prod:
   stage: deploy
@@ -196,10 +166,13 @@ deploy_prod:
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
 ```
+
 {% endraw %}
-</td>
-<td class="d-table-cell v-align-top">
+
+### {% data variables.product.prodname_actions %} syntax for conditions and expressions
+
 {% raw %}
+
 ```yaml
 jobs:
   deploy_prod:
@@ -208,10 +181,8 @@ jobs:
     steps:
       - run: echo "Deploy to production server"
 ```
+
 {% endraw %}
-</td>
-</tr>
-</table>
 
 For more information, see "[AUTOTITLE](/actions/learn-github-actions/expressions)."
 
@@ -221,18 +192,10 @@ Both GitLab CI/CD and {% data variables.product.prodname_actions %} allow you to
 
 Below is an example of the syntax for each system. The workflows start with two jobs named `build_a` and `build_b` running in parallel, and when those jobs complete, another job called `test_ab` will run. Finally, when `test_ab` completes, the `deploy_ab` job will run.
 
-<table class="d-block">
-<tr>
-<th>
-GitLab CI/CD
-</th>
-<th>
-{% data variables.product.prodname_actions %}
-</th>
-</tr>
-<tr>
-<td class="d-table-cell v-align-top">
+### GitLab CI/CD syntax for dependencies between jobs
+
 {% raw %}
+
 ```yaml
 stages:
   - build
@@ -259,10 +222,13 @@ deploy_ab:
   script:
     - echo "This job will run after test_ab is complete"
 ```
+
 {% endraw %}
-</td>
-<td class="d-table-cell v-align-top">
+
+### {% data variables.product.prodname_actions %} syntax for dependencies between jobs
+
 {% raw %}
+
 ```yaml
 jobs:
   build_a:
@@ -287,10 +253,8 @@ jobs:
     steps:
       - run: echo "This job will run after test_ab is complete"
 ```
+
 {% endraw %}
-</td>
-</tr>
-</table>
 
 For more information, see "[AUTOTITLE](/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idneeds)."
 
@@ -312,20 +276,12 @@ GitLab CI/CD and {% data variables.product.prodname_actions %} provide a method 
 
 {% ifversion actions-caching %}
 
-Below is an example of the syntax for each system:
+Below is an example of the syntax for each system.
 
-<table class="d-block">
-<tr>
-<th>
-GitLab CI/CD
-</th>
-<th>
-{% data variables.product.prodname_actions %}
-</th>
-</tr>
-<tr>
-<td class="d-table-cell v-align-top">
+### GitLab CI/CD syntax for caching
+
 {% raw %}
+
 ```yaml
 image: node:latest
 
@@ -341,9 +297,10 @@ test_async:
   script:
     - node ./specs/start.js ./specs/async.spec.js
 ```
+
 {% endraw %}
-</td>
-<td class="d-table-cell v-align-top">
+
+### {% data variables.product.prodname_actions %} syntax for caching
 
 ```yaml
 jobs:
@@ -358,10 +315,6 @@ jobs:
         restore-keys: v1-npm-deps-
 ```
 
-</td>
-</tr>
-</table>
-
 {% else %}
 
 {% data reusables.actions.caching-availability %}
@@ -372,29 +325,24 @@ jobs:
 
 Both GitLab CI/CD and {% data variables.product.prodname_actions %} can upload files and directories created by a job as artifacts. In {% data variables.product.prodname_actions %}, artifacts can be used to persist data across multiple jobs.
 
-Below is an example of the syntax for each system:
+Below is an example of the syntax for each system.
 
-<table>
-<tr>
-<th>
-GitLab CI/CD
-</th>
-<th>
-{% data variables.product.prodname_actions %}
-</th>
-</tr>
-<tr>
-<td class="d-table-cell v-align-top">
+### GitLab CI/CD syntax for artifacts
+
 {% raw %}
+
 ```yaml
 script:
 artifacts:
   paths:
     - math-homework.txt
 ```
+
 {% endraw %}
-</td>
-<td class="d-table-cell v-align-top">
+
+### {% data variables.product.prodname_actions %} syntax for artifacts
+
+{% raw %}
 
 ```yaml
 - name: Upload math result for job 1
@@ -404,9 +352,7 @@ artifacts:
     path: math-homework.txt
 ```
 
-</td>
-</tr>
-</table>
+{% endraw %}
 
 For more information, see "[AUTOTITLE](/actions/using-workflows/storing-workflow-data-as-artifacts)."
 
@@ -416,20 +362,12 @@ Both systems enable you to include additional containers for databases, caching,
 
 In GitLab CI/CD, a container for the job is specified with the `image` key, while {% data variables.product.prodname_actions %} uses the `container` key. In both systems, additional service containers are specified with the `services` key.
 
-Below is an example of the syntax for each system:
+Below is an example of the syntax for each system.
 
-<table class="d-block">
-<tr>
-<th>
-GitLab CI/CD
-</th>
-<th>
-{% data variables.product.prodname_actions %}
-</th>
-</tr>
-<tr>
-<td class="d-table-cell v-align-top">
+### GitLab CI/CD syntax for databases and service containers
+
 {% raw %}
+
 ```yaml
 container-job:
   variables:
@@ -452,9 +390,12 @@ container-job:
   tags:
     - docker
 ```
+
 {% endraw %}
-</td>
-<td class="d-table-cell v-align-top">
+
+### {% data variables.product.prodname_actions %}  syntax for databases and service containers
+
+{% raw %}
 
 ```yaml
 jobs:
@@ -489,8 +430,6 @@ jobs:
           POSTGRES_PORT: 5432
 ```
 
-</td>
-</tr>
-</table>
+{% endraw %}
 
 For more information, see "[AUTOTITLE](/actions/using-containerized-services/about-service-containers)."

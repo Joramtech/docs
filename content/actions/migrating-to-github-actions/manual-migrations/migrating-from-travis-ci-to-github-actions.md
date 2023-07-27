@@ -17,8 +17,7 @@ topics:
   - CD
 shortTitle: Migrate from Travis CI
 ---
-
-{% data reusables.actions.enterprise-beta %}
+ 
 {% data reusables.actions.enterprise-github-hosted-runners %}
 
 ## Introduction
@@ -65,30 +64,25 @@ For more information, see "[AUTOTITLE](/actions/monitoring-and-troubleshooting-w
 
 Travis CI and {% data variables.product.prodname_actions %} both support a matrix, allowing you to perform testing using combinations of operating systems and software packages. For more information, see "[AUTOTITLE](/actions/using-jobs/using-a-matrix-for-your-jobs)."
 
-Below is an example comparing the syntax for each system:
+Below is an example comparing the syntax for each system.
 
-<table>
-<tr>
-<th>
-Travis CI
-</th>
-<th>
-{% data variables.product.prodname_actions %}
-</th>
-</tr>
-<tr>
-<td class="d-table-cell v-align-top">
+#### Travis CI syntax for a matrix
+
 {% raw %}
+
 ```yaml
 matrix:
   include:
     - rvm: 2.5
     - rvm: 2.6.3
 ```
+
 {% endraw %}
-</td>
-<td class="d-table-cell v-align-top">
+
+#### {% data variables.product.prodname_actions %} syntax for a matrix
+
 {% raw %}
+
 ```yaml
 jobs:
   build:
@@ -96,39 +90,32 @@ jobs:
       matrix:
         ruby: [2.5, 2.6.3]
 ```
+
 {% endraw %}
-</td>
-</tr>
-</table>
 
 ### Targeting specific branches
 
 Travis CI and {% data variables.product.prodname_actions %} both allow you to target your CI to a specific branch. For more information, see "[AUTOTITLE](/actions/using-workflows/workflow-syntax-for-github-actions#onpushbranchestagsbranches-ignoretags-ignore)."
 
-Below is an example of the syntax for each system:
+Below is an example of the syntax for each system.
 
-<table>
-<tr>
-<th>
-Travis CI
-</th>
-<th>
-{% data variables.product.prodname_actions %}
-</th>
-</tr>
-<tr>
-<td class="d-table-cell v-align-top">
+#### Travis CI syntax for targeting specific branches
+
 {% raw %}
+
 ```yaml
 branches:
   only:
     - main
     - 'mona/octocat'
 ```
+
 {% endraw %}
-</td>
-<td class="d-table-cell v-align-top">
+
+#### {% data variables.product.prodname_actions %} syntax for targeting specific branches
+
 {% raw %}
+
 ```yaml
 on:
   push:
@@ -136,36 +123,29 @@ on:
       - main
       - 'mona/octocat'
 ```
+
 {% endraw %}
-</td>
-</tr>
-</table>
 
 ### Checking out submodules
 
 Travis CI and {% data variables.product.prodname_actions %} both allow you to control whether submodules are included in the repository clone.
 
-Below is an example of the syntax for each system:
+Below is an example of the syntax for each system.
 
-<table>
-<tr>
-<th>
-Travis CI
-</th>
-<th>
-{% data variables.product.prodname_actions %}
-</th>
-</tr>
-<tr>
-<td class="d-table-cell v-align-top">
+#### Travis CI syntax for checking out submodules
+
 {% raw %}
+
 ```yaml
 git:
   submodules: false
 ```
+
 {% endraw %}
-</td>
-<td class="d-table-cell v-align-top">
+
+#### {% data variables.product.prodname_actions %} syntax for checking out submodules
+
+{% raw %}
 
 ```yaml
 - uses: {% data reusables.actions.action-checkout %}
@@ -173,9 +153,7 @@ git:
     submodules: false
 ```
 
-</td>
-</tr>
-</table>
+{% endraw %}
 
 ### Using environment variables in a matrix
 
@@ -210,12 +188,12 @@ The concurrent jobs and workflow execution times in {% data variables.product.pr
 ### Using different languages in {% data variables.product.prodname_actions %}
 
 When working with different languages in {% data variables.product.prodname_actions %}, you can create a step in your job to set up your language dependencies. For more information about working with a particular language, see the specific guide:
-  - [Building and testing Node.js](/actions/automating-builds-and-tests/building-and-testing-nodejs)
-  - [Building and testing Python](/actions/automating-builds-and-tests/building-and-testing-python)
-  - [Building and testing PowerShell](/actions/automating-builds-and-tests/building-and-testing-powershell)
-  - [Building and testing Java with Maven](/actions/automating-builds-and-tests/building-and-testing-java-with-maven)
-  - [Building and testing Java with Gradle](/actions/automating-builds-and-tests/building-and-testing-java-with-gradle)
-  - [Building and testing Java with Ant](/actions/automating-builds-and-tests/building-and-testing-java-with-ant)
+- [Building and testing Node.js](/actions/automating-builds-and-tests/building-and-testing-nodejs)
+- [Building and testing Python](/actions/automating-builds-and-tests/building-and-testing-python)
+- [Building and testing PowerShell](/actions/automating-builds-and-tests/building-and-testing-powershell)
+- [Building and testing Java with Maven](/actions/automating-builds-and-tests/building-and-testing-java-with-maven)
+- [Building and testing Java with Gradle](/actions/automating-builds-and-tests/building-and-testing-java-with-gradle)
+- [Building and testing Java with Ant](/actions/automating-builds-and-tests/building-and-testing-java-with-ant)
 
 ## Executing scripts
 
@@ -261,20 +239,12 @@ jobs:
 
 Where Travis CI uses _phases_ to run _steps_, {% data variables.product.prodname_actions %} has _steps_ which execute _actions_. You can find prebuilt actions in the [{% data variables.product.prodname_marketplace %}](https://github.com/marketplace?type=actions), or you can create your own actions. For more information, see "[AUTOTITLE](/actions/creating-actions)."
 
-Below is an example of the syntax for each system:
+Below is an example of the syntax for each system.
 
-<table>
-<tr>
-<th>
-Travis CI
-</th>
-<th>
-{% data variables.product.prodname_actions %}
-</th>
-</tr>
-<tr>
-<td class="d-table-cell v-align-top">
+### Travis CI syntax for phases and steps
+
 {% raw %}
+
 ```yaml
 language: python
 python:
@@ -283,9 +253,12 @@ python:
 script:
   - python script.py
 ```
+
 {% endraw %}
-</td>
-<td class="d-table-cell v-align-top">
+
+### {% data variables.product.prodname_actions %} syntax for steps and actions
+
+{% raw %}
 
 ```yaml
 jobs:
@@ -299,9 +272,7 @@ jobs:
       - run: python script.py
 ```
 
-</td>
-</tr>
-</table>
+{% endraw %}
 
 ## Caching dependencies
 
@@ -309,27 +280,20 @@ Travis CI and {% data variables.product.prodname_actions %} let you manually cac
 
 {% ifversion actions-caching %}
 
-This example demonstrates the cache syntax for each system.
+These examples demonstrate the cache syntax for each system.
 
-<table>
-<tr>
-<th>
-Travis CI
-</th>
-<th>
-GitHub Actions
-</th>
-</tr>
-<tr>
-<td class="d-table-cell v-align-top">
+### Travis CI syntax for caching
+
 {% raw %}
+
 ```yaml
 language: node_js
 cache: npm
 ```
+
 {% endraw %}
-</td>
-<td class="d-table-cell v-align-top">
+
+### GitHub Actions syntax for caching
 
 ```yaml
 - name: Cache node modules
@@ -339,10 +303,6 @@ cache: npm
     key: {% raw %}v1-npm-deps-${{ hashFiles('**/package-lock.json') }}{% endraw %}
     restore-keys: v1-npm-deps-
 ```
-
-</td>
-</tr>
-</table>
 
 {% else %}
 
@@ -356,27 +316,16 @@ This section compares how {% data variables.product.prodname_actions %} and Trav
 
 ### Configuring environment variables
 
-You can create custom environment variables in a {% data variables.product.prodname_actions %} job. For example:
+You can create custom environment variables in a {% data variables.product.prodname_actions %} job.
 
-<table>
-<tr>
-<th>
-Travis CI
-</th>
-<th>
-{% data variables.product.prodname_actions %} Workflow
-</th>
-</tr>
-<tr>
-<td>
+#### Travis CI syntax for an environment variable
 
 ```yaml
 env:
   - MAVEN_PATH="/usr/local/maven"
 ```
 
-</td>
-<td>
+#### {% data variables.product.prodname_actions %} workflow with an environment variable
 
 ```yaml
 jobs:
@@ -385,24 +334,12 @@ jobs:
       MAVEN_PATH: '/usr/local/maven'
 ```
 
-</td>
-</tr>
-</table>
-
 ### Building with Node.js
 
-<table>
-<tr>
-<th>
-Travis CI
-</th>
-<th>
-{% data variables.product.prodname_actions %} Workflow
-</th>
-</tr>
-<tr>
-<td>
+##### Travis CI for building with Node.js
+
 {% raw %}
+
 ```yaml
 install:
   - npm install
@@ -410,9 +347,10 @@ script:
   - npm run build
   - npm test
 ```
+
 {% endraw %}
-</td>
-<td>
+
+##### {% data variables.product.prodname_actions %} workflow for building with Node.js
 
 ```yaml
 name: Node.js CI
@@ -430,10 +368,6 @@ jobs:
       - run: npm run build
       - run: npm test
 ```
-
-</td>
-</tr>
-</table>
 
 ## Next steps
 

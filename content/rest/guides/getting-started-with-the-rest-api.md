@@ -100,9 +100,11 @@ You can authenticate your request by adding a token.
 
 If you want to use the {% data variables.product.company_short %} REST API for personal use, you can create a {% data variables.product.pat_generic %}. The REST API operations used in this article require `repo` scope for {% data variables.product.pat_v1_plural %}{% ifversion pat-v2 %} or, unless otherwise noted, read-only access to public repositories for {% data variables.product.pat_v2 %}s{% endif %}. Other operations may require different scopes{% ifversion pat-v2%} or permissions{% endif %}. For more information about creating a {% data variables.product.pat_generic %}, see "[AUTOTITLE](/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)."
 
-If you want to use the API on behalf of an organization or another user, {% data variables.product.company_short %} recommends that you use a {% data variables.product.prodname_github_app %}. If an operation is available to {% data variables.product.prodname_github_apps %}, the REST reference documentation for that operation will say "Works with GitHub Apps." The REST API operations used in this article require `issues` read and write permissions for {% data variables.product.prodname_github_apps %}. Other operations may require different permissions. For more information, see "[AUTOTITLE](/apps/creating-github-apps/creating-github-apps/creating-a-github-app)", "[AUTOTITLE](/apps/creating-github-apps/authenticating-with-a-github-app/about-authentication-with-a-github-app), and "[AUTOTITLE](/apps/creating-github-apps/authenticating-with-a-github-app/identifying-and-authorizing-users-for-github-apps)."
+If you want to use the API on behalf of an organization or another user, {% data variables.product.company_short %} recommends that you use a {% data variables.product.prodname_github_app %}. If an operation is available to {% data variables.product.prodname_github_apps %}, the REST reference documentation for that operation will say "Works with GitHub Apps." The REST API operations used in this article require `issues` read and write permissions for {% data variables.product.prodname_github_apps %}. Other operations may require different permissions. For more information, see "[AUTOTITLE](/apps/creating-github-apps/setting-up-a-github-app/creating-a-github-app)", "[AUTOTITLE](/apps/creating-github-apps/authenticating-with-a-github-app/about-authentication-with-a-github-app), and "[AUTOTITLE](/apps/creating-github-apps/authenticating-with-a-github-app/identifying-and-authorizing-users-for-github-apps)."
 
 If you want to use the API in a {% data variables.product.prodname_actions %} workflow, {% data variables.product.company_short %} recommends that you authenticate with the built-in `GITHUB_TOKEN` instead of creating a token. You can grant permissions to the `GITHUB_TOKEN` with the `permissions` key. For more information, see "[AUTOTITLE](/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token)."
+
+For more information about best practices you can use to keep your tokens secure, see "[AUTOTITLE](/rest/overview/keeping-your-api-credentials-secure)."
 
 ### Authentication example
 
@@ -128,7 +130,7 @@ To keep your token secure, you can store your token as a secret and run your scr
 
 {% ifversion ghec or fpt %}You can also store your token as a {% data variables.product.prodname_codespaces %} secret and run your script in {% data variables.product.prodname_codespaces %}. For more information, see "[AUTOTITLE](/codespaces/managing-your-codespaces/managing-encrypted-secrets-for-your-codespaces)."{% endif %}
 
-If these options are not possible, consider using another service such as [the 1Password CLI](https://developer.1password.com/docs/cli/secret-references/) to store your token securely.
+If these options are not possible, consider using another CLI service to store your token securely.
 
 {% endwarning %}
 
@@ -153,7 +155,7 @@ To help keep your account secure, you can use {% data variables.product.prodname
 
 {% ifversion ghec or fpt %}You can also store your token as a {% data variables.product.prodname_codespaces %} secret and use the command line through {% data variables.product.prodname_codespaces %}. For more information, see "[AUTOTITLE](/codespaces/managing-your-codespaces/managing-encrypted-secrets-for-your-codespaces)."{% endif %}
 
-If these options are not possible, consider using another service such as [the 1Password CLI](https://developer.1password.com/docs/cli/secret-references/) to store your token securely.
+If these options are not possible, consider using another CLI service to store your token securely.
 
 {% endwarning %}
 
@@ -326,7 +328,7 @@ To send a header in a `curl` command, use the `--header` or `-H` flag followed b
 curl --request GET \
 --url "https://api.github.com/octocat" \
 --header "Accept: application/vnd.github+json" \
---header "Authorization: Bearer <em>YOUR-TOKEN</em>"{% ifversion api-date-versioning %}\
+--header "Authorization: Bearer YOUR-TOKEN"{% ifversion api-date-versioning %} \
 --header "X-GitHub-Api-Version: {{ allVersions[currentVersion].latestApiVersion }}"{% endif %}
 ```
 
@@ -705,7 +707,7 @@ jq '.[] | {title: .title, authorID: .user.id}' data.json
 
 The previous two commands return something like:
 
-```
+```json
 {
   "title": "Update index.html",
   "authorID": 10701255
@@ -762,7 +764,7 @@ jq '.[] | {title: .title, authorID: .user.id}' data.json
 
 The previous two commands return something like:
 
-```
+```json
 {
   "title": "Update index.html",
   "authorID": 10701255
